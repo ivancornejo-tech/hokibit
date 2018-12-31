@@ -54,9 +54,11 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = TRUE;
 
 /*Rutas Page*/
-$route['Descargas']='Probar_control';
-$route['Planes']='Planes_control';
-$route['Soporte']='Soporte_control';
+$route['noticias']='noticias_control';
+$route['cursos']='cursos_control';
+$route['nosotros']='nosotros_control';
+$route['templates']='templates_control';
+
 /* Rutas Rest*/
 // $route['api_rest/Rest_example']['get'] = 'api_rest/Rest_example/index';
 // $route['api_rest/Rest_example/(:num)']['get'] = 'api_rest/Rest_example/find/$1';
