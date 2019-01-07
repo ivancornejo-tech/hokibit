@@ -54,8 +54,8 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = TRUE;
 
 /*Rutas Page*/
-$route['noticias']='noticias_control';
-$route['cursos']='cursos_control';
+$route['blog']='blog_control';
+$route['blog/(:num)']='blog_control/ver/$1';
 $route['nosotros']='nosotros_control';
 $route['templates']='templates_control';
 

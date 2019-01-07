@@ -4,17 +4,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 /**
  * 
  */
-class Registros extends CI_Controller
+class Registros_control extends CI_Controller
 {
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->model("RegistrosModel");
+		$this->load->model("Registros_model");
 	}
 
 	/*public function index()
 	{
-		$Licencia = $this->RegistrosModel->getREgistros();
+		$Licencia = $this->Registros_model->getREgistros();
 	}*/
 
 	public function SaveRegister()
@@ -30,7 +30,7 @@ class Registros extends CI_Controller
                     'Normas' => $_POST['Normas'],
                     'Publicidad' => $_POST['Publicidad']
                 );
-			$RegistroId =$this->RegistrosModel->SaveRegister($data); 
+			$RegistroId =$this->Registros_model->SaveRegister($data); 
 			if (!is_null($RegistroId)) {
 				$dataKey = array(
                     'Tipo' => $_POST['Tipo'],
@@ -39,7 +39,7 @@ class Registros extends CI_Controller
 					'Status' => '1',
 					'idRegistro' => $RegistroId
                 );
-				$SerialKey =$this->RegistrosModel->SaveUUID($dataKey);
+				$SerialKey =$this->Registros_model->SaveUUID($dataKey);
 				if (!is_null($SerialKey)) {
 					// print_r($SerialKey);
 						$Nombre = $_POST['Nombre'];
@@ -65,7 +65,7 @@ class Registros extends CI_Controller
                     'Normas' => $_POST['Normas'],
                     'Publicidad' => $_POST['Publicidad']
                 );
-			$RegistroId =$this->RegistrosModel->SaveRegister($data); 
+			$RegistroId =$this->Registros_model->SaveRegister($data); 
 			if (!is_null($RegistroId)) {
 				$dataKey = array(
                     'Tipo' => '1',
@@ -74,7 +74,7 @@ class Registros extends CI_Controller
 					'Status' => '1',
 					'idRegistro' => $RegistroId
                 );
-				$SerialKey =$this->RegistrosModel->SaveUUID($dataKey);
+				$SerialKey =$this->Registros_model->SaveUUID($dataKey);
 				if (!is_null($SerialKey)) {
 					// print_r($SerialKey);
 						$Nombre = $_POST['Nombre'];

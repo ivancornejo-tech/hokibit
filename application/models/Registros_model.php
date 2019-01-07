@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 /**
  * 
  */
-class RegistrosModel extends CI_Model
+class Registros_model extends CI_Model
 {
 	
 	function __construct()

@@ -26,8 +26,7 @@
 					<div class="collapse navbar-collapse" id="navbar10">
 							<ul class="navbar-nav ml-auto">
 							<li class="nav-item"><a class="nav-link" href="<?php echo base_url();?>">home</a></li>
-							<li class="nav-item"><a class="nav-link" href="<?php echo base_url();?>noticias">Noticias</a></li>
-							<li class="nav-item"><a class="nav-link" href="<?php echo base_url();?>cursos">Cursos</a></li>
+							<li class="nav-item"><a class="nav-link" href="<?php echo base_url();?>blog">Blog</a></li>
 							<li class="nav-item"><a class="nav-link" href="<?php echo base_url();?>nosotros">Nosotros</a></li>
 							<li class="nav-item"><a class="nav-link" href="<?php echo base_url();?>templates">Plantillas</a></li>
 							<li class="nav-item"><a class="nav-link" href="#">Contactos</a> </li>
