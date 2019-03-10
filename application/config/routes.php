@@ -54,10 +54,15 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = TRUE;
 
 /*Rutas Page*/
-$route['noticias']='noticias_control';
-$route['cursos']='cursos_control';
+$route['blog'] = 'blog_control/index';
+$route['blog/(:num)'] = 'blog_control/index/$1';
+$route['blog/(:num)/(:num)'] = 'blog_control/index/$1/$2';
+$route['blog/(:num)/(:num)/(:num)'] = 'blog_control/index/$1/$2/$3';
+$route[ 'blog/(:num)/(:num)/(:num)/(:any)'] = 'blog_control/ver/$1/$2/$3/$4';
 $route['nosotros']='nosotros_control';
 $route['templates']='templates_control';
+
+$route['panel']='panel/Admin/index';
 
 /* Rutas Rest*/
 // $route['api_rest/Rest_example']['get'] = 'api_rest/Rest_example/index';
