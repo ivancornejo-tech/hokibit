@@ -10,6 +10,7 @@ class Registros_model extends CI_Model
 	function __construct()
 	{
 		parent::__construct();
+		$this->db->query("SET lc_time_names = 'es_ES'");
 	}
 
 	public function getRegistros(){

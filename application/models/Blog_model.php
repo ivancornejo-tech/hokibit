@@ -10,38 +10,12 @@ class Blog_model extends CI_Model
 	function __construct()
 	{
 		parent::__construct();
-	}
-
-	public function getAllArticles()
-	{
-		$query = $this->db->select('Articulos.idArticulos,
-			Articulos.Titulo,
-			Articulos.Resumen,
-			Articulos.FechaPublicacion,
-			Articulos.FechaActualizacion,
-			Autor.Nombre')
-			->from('Articulos')
-			->join('Autor', 'Autor.idAutor = Articulos.Autor', 'inner')
-			->get();
-		if ($query->num_rows() > 0) {
-			return $query->result_array();
-		}
-	}
-
-	private function getAllPost($iDarticle)
-	{
-		$query = $this->db->select('idPosts, Articulo, Contenido')
-			->from('Posts')
-			->where('Articulo', $iDarticle)
-			->get();
-		if ($query->num_rows() > 0) {
-			return $query->result_array();
-		}
+		$this->db->query("SET lc_time_names = 'es_ES'");
 	}
 
 	private function getAllImages($iDarticle)
 	{
-		$query = $this->db->select('idImagenes, Articulo, Nombre, Extencion, Cita')
+		$query = $this->db->select('idImagenes, Articulo, Titulo, Extencion, Cita')
 			->from('Imagenes')
 			->where('Articulo', $iDarticle)
 			->get();
@@ -52,7 +26,7 @@ class Blog_model extends CI_Model
 
 	private function getAllVideos($iDarticle)
 	{
-		$query = $this->db->select('idVideos, Articulo, Nombre, Enlace')
+		$query = $this->db->select('idVideos, Articulo, Titulo, Enlace')
 			->from('Videos')
 			->where('Articulo', $iDarticle)
 			->get();
@@ -61,33 +35,116 @@ class Blog_model extends CI_Model
 		}
 	}
 
-	public function getArticle($iDarticle)
+	public function getArticles($year = null, $month = null, $day = null, $name = null)
 	{
-		$query = $this->db->select('Articulos.idArticulos,
-			Articulos.Titulo,
-			Articulos.Resumen,
-			Articulos.FechaPublicacion,
-			Articulos.FechaActualizacion,
-			Autor.Nombre')
-			->from('Articulos')
-			->join('Autor', 'Autor.idAutor = Articulos.Autor', 'inner')
-			->where('idArticulos', $iDarticle)
-			->get();
-		if ($query->num_rows() > 0) {
-			foreach ($query->result() as $data) {
-				$array = array(
-					'idArticulos' => $data->idArticulos,
-					'Titulo' => $data->Titulo,
-					'Resumen' => $data->Resumen,
-					'FechaPublicacion' => $data->FechaPublicacion,
-					'FechaActualizacion' => $data->FechaActualizacion,
-					'Autor' => $data->Nombre,
-					'Posts' => $this->getAllPost($iDarticle),
-					'Imagenes' => $this->getAllImages($iDarticle),
-					'Videos' => $this->getAllVideos($iDarticle)
-				);
+		if (!is_null($name) && !is_null($year) && !is_null($month) && !is_null($day)) 
+		{
+			$fecha = $year . "-" . $month . "-" . $day;
+			$query = $this->db->select( 'idArticulos,
+			DATE_FORMAT(FechaPublicacion, "%Y/%m/%d") AS FechaPublicacion, 
+			DATE_FORMAT(FechaActualizacion, "%Y/%m/%d") AS FechaActualizacion, 
+			Titulo, REPLACE(Titulo, " ", "_") as Url, Autor, Resumen, Contenido')
+				->from('Articulos')
+				->where('DATE(FechaPublicacion)', $fecha)
+				->order_by('DATE(FechaPublicacion)', 'DESC')
+				->where('Titulo =', $name)
+				->get();
+			if ($query->num_rows() > 0) {
+				foreach ($query->result() as $item) {
+					$array['idArticulos'] = $item->idArticulos;
+					$array['FechaPublicacion'] = $item->FechaPublicacion;
+					$array['FechaActualizacion'] = $item->FechaPublicacion;
+					$array['Titulo'] = $item->Titulo;
+					$array['Url'] = $item->Url;
+					$array['Autor'] = $this->_getAutor($item->Autor);
+					$array['Resumen'] = $item->Resumen;
+					$array['Contenido'] = $item->Contenido;
+				}
+				return $array;
 			}
-			return $array;
+		}
+		if (is_null($name) && !is_null($year) && !is_null($month) && !is_null($day)) 
+		{
+			$fecha = $year . "-" . $month . "-" . $day;
+			$query = $this->db->select( 'idArticulos, 
+			DATE_FORMAT(FechaPublicacion, "%Y/%m/%d") AS FechaPublicacion, 
+			DATE_FORMAT(FechaActualizacion, "%Y/%m/%d") AS FechaActualizacion, 
+			Titulo, Autor, REPLACE(Titulo, " ", "_") as Url, Resumen, Contenido')
+				->from('Articulos')
+				->where('DATE(FechaPublicacion)', $fecha)
+				->order_by('FechaPublicacion', 'DESC')
+				->get();
+			if ($query->num_rows() > 0) {
+				return $query->result_array();
+			}
+		}
+		if (is_null($name) && !is_null($year) && !is_null($month) && is_null($day)) 
+		{
+			$fecha = $year . "-" . $month;
+			$query = $this->db->select( 'idArticulos, 
+			DATE_FORMAT(FechaPublicacion, "%Y/%m/%d") AS FechaPublicacion,
+			DATE_FORMAT(FechaActualizacion, "%Y/%m/%d") AS FechaActualizacion,  
+			Titulo, Autor, REPLACE(Titulo, " ", "_") as Url, Resumen, Contenido')
+				->from('Articulos')
+				->where('DATE_FORMAT(FechaPublicacion, "%Y-%m") = ', $fecha)
+				->order_by('FechaPublicacion', 'DESC')
+				->get();
+			if ($query->num_rows() > 0) {
+				return $query->result_array();
+			}
+		}
+		if (is_null($name) && !is_null($year) && is_null($month) && is_null($day)) 
+		{
+			$fecha = $year;
+			$query = $this->db->select( 'idArticulos, 
+			DATE_FORMAT(FechaPublicacion, "%Y/%m/%d") AS FechaPublicacion, 
+			DATE_FORMAT(FechaActualizacion, "%Y/%m/%d") AS FechaActualizacion, 
+			Titulo, Autor, REPLACE(Titulo, " ", "_") as Url, Resumen, Contenido')
+				->from('Articulos')
+				->where('YEAR(FechaPublicacion) = ', $fecha)
+				->order_by('FechaPublicacion', 'DESC')
+				->get();
+			if ($query->num_rows() > 0) {
+				return $query->result_array();
+			}
+		}
+		return null;
+	}
+
+	public function getAllArticles($year = null, $month = null, $day = null, $name = null)
+	{
+		if (is_null($name) && is_null($year) && is_null($month) && is_null($day)) 
+		{
+			$query = $this->db->select( 'idArticulos, 
+			DATE_FORMAT(FechaPublicacion, "%Y/%m/%d") AS FechaPublicacion, 
+			DATE_FORMAT(FechaActualizacion, "%Y/%m/%d") AS FechaActualizacion, 
+			Titulo, REPLACE(Titulo, " ", "_") as Url, Autor, Resumen')
+				->from('Articulos')
+				->order_by('FechaPublicacion', 'DESC')
+				->get();
+			if ($query->num_rows() > 0) {
+				return $query->result_array();
+			}
+		}
+	}
+
+	private  function _getAutor($id_autor)
+	{
+		$query = $this->db->select('idAutor, 
+		Nombre,
+		Rol, 
+		Correo, 
+		Descripcion, 
+		UsuarioFacebook, 
+		UsuarioTwitter, 
+		UsuarioYoutube,
+		UsuarioGitLab,
+		UsuarioGitHub')
+		->from('Autor')
+		->where('idAutor', $id_autor)
+		->get();
+		if ($query->num_rows() > 0) {
+			return $query->result_array();
 		}
 	}
 
